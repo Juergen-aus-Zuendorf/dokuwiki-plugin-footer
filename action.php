@@ -65,17 +65,23 @@ class action_plugin_footer extends DokuWiki_Action_Plugin {
         }
 
         if (!empty($footerpath)) {
-            $footer = file_get_contents($footerpath);
-            if ($footer !== false) {
-                $data['tpl'] = cleanText($footer);
-                $footer = parsePageTemplate($data);
-
-                if ($this->getConf('separation') == 'paragraph') { 
-					// Wenn Absätze zum Teilen verwendet werden
-                    $footer = rtrim($footer, " \r\n\\") . "\n\n";
-                }
-                $event->data .= $footer;
-            }
-        }
+			$content = $event->data;
+			if(strpos($content,"~~NOFOOTER~~") == false) { 
+				// Prüfung. ob der Befehl "~~NOFOOTER~~" im Quelltext enthalten ist
+				$footer = file_get_contents($footerpath);
+				if ($footer !== false) {
+					$data['tpl'] = cleanText($footer);
+					$footer = parsePageTemplate($data);
+					if ($this->getConf('separation') == 'paragraph') { 
+						// Wenn Absätze zum Teilen verwendet werden
+						$footer = rtrim($footer, " \r\n\\") . "\n\n";
+					}
+					$event->data .= $footer;
+				}
+			} else {
+				$event->data = str_replace('~~NOFOOTER~~','',$content);
+				// Befehl "~~NOFOOTER~~" soll nicht angezeigt werden
+			}
+		}
     }
 }
