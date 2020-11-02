@@ -28,5 +28,12 @@ class syntax_plugin_footer extends DokuWiki_Syntax_Plugin {
 		$match = str_replace("~~NOFOOTER~~", '', $match);
 	}
 
+    function render($mode, Doku_Renderer $renderer, $data) {
+        if($mode == 'xhtml'){           
+            return true;
+        }
+        return false;
+    }
+
 }
 ?>
